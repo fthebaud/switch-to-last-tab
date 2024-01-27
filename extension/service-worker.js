@@ -1,13 +1,18 @@
 "use strict";
-// Add event listener to the click on extension's icon
-chrome.action.onClicked.addListener((tab) => {
-    // Execute script in a specific context
-    chrome.scripting.executeScript({
-        // Execution context
-        target: { tabId: tab.id },
-        // Script
-        func: () => {
-            console.log("HELLO");
-        },
-    });
+let previousTab;
+let currentTab;
+function switchToPreviousTab() {
+    chrome.tabs.update(previousTab.tabId, { active: true });
+}
+chrome.tabs.onActivated.addListener((tabActiveInfo) => {
+    previousTab = currentTab;
+    currentTab = tabActiveInfo;
+});
+chrome.commands.onCommand.addListener((command) => {
+    if (command === "switch-to-previous-tab") {
+        switchToPreviousTab();
+    }
+});
+chrome.action.onClicked.addListener(() => {
+    switchToPreviousTab();
 });

@@ -1,6 +1,6 @@
 # Switch To Last Tab
 
-Chrome extension
+Chrome extension to switch back and forth between the most recently active tabs.
 
 ## Install dependencies
 
@@ -13,7 +13,3 @@ npm install
 ```
 npx tsc
 ```
-
-## Icon
-
-<a target="_blank" href="https://icons8.com/icon/53015/round">Round</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>

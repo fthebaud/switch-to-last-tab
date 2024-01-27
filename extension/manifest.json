@@ -13,7 +13,22 @@
     "service_worker": "service-worker.js",
     "type": "module"
   },
-  "action": {},
-  "permissions": ["scripting"],
-  "host_permissions": ["http://*/*", "https://*/*"]
+  "action": {
+    "default_icon": {
+      "16": "images/icon-16.png",
+      "32": "images/icon-32.png"
+    },
+    "default_title": "Switch to previous tab"
+  },
+  "permissions": ["activeTab"],
+  "host_permissions": ["http://*/*", "https://*/*"],
+  "commands": {
+    "switch-to-previous-tab": {
+      "suggested_key": {
+        "default": "Ctrl+Q",
+        "mac": "Command+Q"
+      },
+      "description": "Switch to the previously active tab"
+    }
+  }
 }
