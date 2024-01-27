@@ -25,7 +25,7 @@
   "commands": {
     "switch-to-previous-tab": {
       "suggested_key": {
-        "default": "Ctrl+Q",
+        "default": "Alt+Q",
         "mac": "Command+Q"
       },
       "description": "Switch to the previously active tab"
