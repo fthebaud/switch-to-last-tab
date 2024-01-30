@@ -8,47 +8,50 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-// Only memorize three tabs: [current, current-1, current-2]
-let previousTabsId = new Array(3);
-let timeoutId = null;
-const DEBOUNCE = 200; // ms
-function memorizeTab(tab) {
-    // Remove oldest tab
-    previousTabsId.pop();
+const ARRAY_SIZE = 10;
+let previousTabs = new Array(ARRAY_SIZE);
+function memorizeTab(tabId) {
+    console.log("Memorize", tabId);
+    // Look for the tab
+    const tabIndex = previousTabs.findIndex((id) => id === tabId);
+    if (tabIndex !== -1) {
+        // If the tab is present, remove it
+        previousTabs.splice(tabIndex, 1);
+    }
+    else {
+        // Else we remove oldest tab
+        previousTabs.pop();
+    }
     // Add current tab at index 0 and shift-right other tabs
-    previousTabsId.unshift(tab.tabId);
+    previousTabs.unshift(tabId);
+    console.log(previousTabs);
 }
-function switchToTab(index) {
-    timeoutId = setTimeout(() => __awaiter(this, void 0, void 0, function* () {
+function removeTab(tabId) {
+    console.log("Remove", tabId);
+    const tabIndex = previousTabs.findIndex((id) => id === tabId);
+    previousTabs.splice(tabIndex, 1);
+    previousTabs.length = ARRAY_SIZE;
+    console.log(previousTabs);
+}
+function switchToPreviousTab() {
+    return __awaiter(this, void 0, void 0, function* () {
+        console.log("Switch to previous tab");
         try {
-            yield chrome.tabs.update(previousTabsId[index], {
+            yield chrome.tabs.update(previousTabs[1], {
                 active: true,
             });
+            console.log(previousTabs);
         }
         catch (e) {
             console.log(e);
         }
-        finally {
-            timeoutId = null;
-        }
-    }), DEBOUNCE);
-}
-function switchToPreviousTab() {
-    // If double click or double command within debounce delay
-    if (timeoutId) {
-        // Cancel current timeout
-        clearTimeout(timeoutId);
-        timeoutId = null;
-        // Go back two tabs
-        switchToTab(2);
-    }
-    else {
-        // Go back one tab
-        switchToTab(1);
-    }
+    });
 }
 chrome.tabs.onActivated.addListener((tab) => {
-    memorizeTab(tab);
+    memorizeTab(tab.tabId);
+});
+chrome.tabs.onRemoved.addListener((tab) => {
+    removeTab(tab);
 });
 chrome.commands.onCommand.addListener((command) => {
     if (command === "switch-to-previous-tab") {
